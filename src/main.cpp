@@ -4,6 +4,8 @@
 #include "PID.h"
 #include <math.h>
 
+using namespace std;
+
 // for convenience
 using json = nlohmann::json;
 
@@ -34,7 +36,14 @@ int main()
 
   PID pid;
   // TODO: Initialize the pid variable.
+  // pid.Init(3.75, 29.91, 0.0); // 10 miles/h
+  //pid.Init(2.74,  24.52, .93); // 10 miles/h -- with steering drift .44
+  //pid.Init(.355, 4.96, 0.0); // 20 miles/h
+  //pid.Init(2.13, 14.68, 0.54); // 30 miles/h
 
+  // Just with P value
+  pid.Init(3, 0, 0);
+  
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -50,6 +59,8 @@ int main()
           double cte = std::stod(j[1]["cte"].get<std::string>());
           double speed = std::stod(j[1]["speed"].get<std::string>());
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
+
+          cout << "Speed: " << speed << ", angle: " << angle << endl;
           double steer_value;
           /*
           * TODO: Calcuate steering value here, remember the steering value is
@@ -57,15 +68,25 @@ int main()
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
-          
-          // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
+          pid.UpdateError(cte);
+          steer_value = pid.calculate_steer();
+
+
+          cout << "CTE: " << cte << ", Steering Value: " << steer_value << endl;
+              
+          // Set throttle value based on desired spped
+          const double DESIRED_SPEED = 10;
+          double throttle = .3;
+          if (speed >= DESIRED_SPEED) {
+            throttle = 0.;
+          }
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = 0.3;
+          msgJson["throttle"] = throttle;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-          std::cout << msg << std::endl;
+          cout << msg << std::endl;
+          cout << "total error: " << pid.TotalError() << endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {

@@ -10,12 +10,15 @@ public:
   double i_error;
   double d_error;
 
+  double square_error;
   /*
   * Coefficients
   */ 
   double Kp;
   double Ki;
   double Kd;
+
+  bool first_time;
 
   /*
   * Constructor
@@ -41,6 +44,12 @@ public:
   * Calculate the total PID error.
   */
   double TotalError();
+
+  /*
+  * calculate the steering angle needed
+  */
+  double calculate_steer();
+  
 };
 
 #endif /* PID_H */
