@@ -110,7 +110,7 @@ def make_robot():
     You'll want to call this after you call `run`.
     """
     robot = Robot(length = 5)
-    robot.set(0, .7598, 0)
+    robot.set(0, 1, 0)
     #robot.set_noise(5/180 * np.pi, .2)
     robot.set_steering_drift(.44 / 180 * np.pi)
     return robot
@@ -140,8 +140,9 @@ def run(robot, params, n=100, speed=1.0):
 
 # Speed of 3.3 metres per 100 msec is equalt to 120 km / h
 #Speed is in km/hr
-speed_miles_per_h = 10
-speed_in_100ms = speed_miles_per_h * 1.6 * 1000 / 60. / 60. / 10.
+speed_miles_per_h = 20
+#every 5 msec actually!
+speed_in_100ms = speed_miles_per_h * 1.6 * 1000 / 60. / 60. / 200.
 print('speed: ', speed_miles_per_h, ' miles/h', "; metres/100ms: ", speed_in_100ms)
 
 # Make this tolerance bigger if you are timing out!
@@ -150,6 +151,7 @@ def twiddle(tol=0.2):
     p = [0, 0, 0]
     dp = [1, 1, 1]
     robot = make_robot()
+    print('p before run:', p)
     x_trajectory, y_trajectory, best_err = run(robot, p, speed=speed_in_100ms)
     # TODO: twiddle loop here
     while sum(dp) > tol:
@@ -158,6 +160,7 @@ def twiddle(tol=0.2):
             p[i]+=dp[i]
             # we need to create a new robot instance each time for twiddle
             robot = make_robot()
+            print('p before run:', p)
             _, _, err = run(robot, p, speed=speed_in_100ms)
             if err < best_err:
                 best_err = err
@@ -166,6 +169,7 @@ def twiddle(tol=0.2):
                 p[i]-=2*dp[i]
                 # we need to create a new robot instance each time for twiddle
                 robot = make_robot()
+                print('p before run:', p)
                 _, _, err = run(robot, p, speed=speed_in_100ms)
                 if err < best_err:
                     best_err = err
@@ -173,7 +177,9 @@ def twiddle(tol=0.2):
                 else:
                     p[i]+=dp[i]
                     dp[i]*=0.9
+            
     
+    print("no. of loops for twiddle: ", count)
     print("final p: ", p)
     
     return p, best_err

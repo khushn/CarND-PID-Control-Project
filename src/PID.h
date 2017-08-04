@@ -1,6 +1,10 @@
 #ifndef PID_H
 #define PID_H
 
+#include <uWS/uWS.h>
+
+const int NUM_PARAMS=3;
+
 class PID {
 public:
   /*
@@ -11,34 +15,45 @@ public:
   double d_error;
 
   double square_error;
+
+  double best_error;
   /*
   * Coefficients
   */ 
-  double Kp;
-  double Ki;
-  double Kd;
+
+  double p[NUM_PARAMS];
+  double dp[NUM_PARAMS];
 
   bool first_time;
 
+  uWS::WebSocket<uWS::SERVER> ws_;
+
+  int iterations_;
+
+  bool restart_mode;
   /*
   * Constructor
   */
-  PID();
+  PID(double p[3]);
 
   /*
   * Destructor.
   */
   virtual ~PID();
 
-  /*
-  * Initialize PID.
-  */
-  void Init(double Kp, double Ki, double Kd);
+
+  void reset_vars();
 
   /*
   * Update the PID error variables given cross track error.
+  * the method used in training (or twiddle) mode
   */
-  void UpdateError(double cte);
+  int UpdateErrorTraining(double cte, double speed, double angle);
+
+  /*
+  * The method used in drive mode
+  */
+  int UpdateErrorDrive(double cte, double speed, double angle);
 
   /*
   * Calculate the total PID error.
@@ -49,6 +64,21 @@ public:
   * calculate the steering angle needed
   */
   double calculate_steer();
+
+  /**
+  Thanks to this forum discussion. Got the idea from there: 
+  https://discussions.udacity.com/t/twiddle-application-in-pid-controller/243427/21
+  */
+  void SetServer(uWS::WebSocket<uWS::SERVER> ws);
+  void Restart();
+
+  int twiddle_check();
+
+  bool check_best_error();
+
+  // vars used by twiddle
+  int twiddle_n;
+  int twiddle_fn_pos;
   
 };
 

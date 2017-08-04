@@ -34,15 +34,19 @@ int main()
 {
   uWS::Hub h;
 
-  PID pid;
-  // TODO: Initialize the pid variable.
-  // pid.Init(3.75, 29.91, 0.0); // 10 miles/h
-  //pid.Init(2.74,  24.52, .93); // 10 miles/h -- with steering drift .44
-  //pid.Init(.355, 4.96, 0.0); // 20 miles/h
-  //pid.Init(2.13, 14.68, 0.54); // 30 miles/h
+  
+  // double p[NUM_PARAMS] = {3, 0, 0}; // 1st try -- works for 10 miles/hour using python twiddle
 
-  // Just with P value
-  pid.Init(3, 0, 0);
+  //double p[NUM_PARAMS] = {0, 0, 0}; 
+
+  // Below found using twiddle for 10 miles per hour. 80 steps
+  //double p[NUM_PARAMS] = {5.05822, 1.44926, 0};
+  double p[NUM_PARAMS] = {0.538877, 0.916183, 0}; // Found for 20 miles per hour 
+
+
+  PID pid(p);
+
+  
   
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -55,12 +59,17 @@ int main()
         auto j = json::parse(s);
         std::string event = j[0].get<std::string>();
         if (event == "telemetry") {
+
+          
           // j[1] is the data JSON object
           double cte = std::stod(j[1]["cte"].get<std::string>());
           double speed = std::stod(j[1]["speed"].get<std::string>());
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
 
-          cout << "Speed: " << speed << ", angle: " << angle << endl;
+          //cout << "Speed: " << speed << ", angle: " << angle << endl;
+
+          pid.SetServer(ws);
+
           double steer_value;
           /*
           * TODO: Calcuate steering value here, remember the steering value is
@@ -68,14 +77,25 @@ int main()
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
-          pid.UpdateError(cte);
+
+          bool train=false;
+
+          if (train) {
+            int ret = pid.UpdateErrorTraining(cte, speed, angle);
+            if (ret != 0) {
+              return;
+            }
+          } else {
+            pid.UpdateErrorDrive(cte, speed, angle);
+          }
+
           steer_value = pid.calculate_steer();
 
 
-          cout << "CTE: " << cte << ", Steering Value: " << steer_value << endl;
+         // cout << "CTE: " << cte << ", Steering Value: " << steer_value << endl;
               
           // Set throttle value based on desired spped
-          const double DESIRED_SPEED = 10;
+          const double DESIRED_SPEED = 20;
           double throttle = .3;
           if (speed >= DESIRED_SPEED) {
             throttle = 0.;
@@ -85,8 +105,10 @@ int main()
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = throttle;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-          cout << msg << std::endl;
-          cout << "total error: " << pid.TotalError() << endl;
+          if (!train) {
+            cout << msg << std::endl;
+            cout << "total error: " << pid.TotalError() << endl;
+          }
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {

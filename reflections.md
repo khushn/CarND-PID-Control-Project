@@ -23,3 +23,16 @@ We set the steering drift at .44
 <td>60.82</td>
 </tr>
 </table>
+
+#### best p values using twiddle
+
+1)
+error: 0.119131 (speed 10 miles/hr)
+corresponding p: 5.05822, 1.44926, 0
+
+2) error 49.75 (speed 30 miles/hr
+0.121577, 0, 0
+
+3) speed: 20 miles/hr
+  error: 6.11535
+  p: 0.538877, 0.916183, 0
