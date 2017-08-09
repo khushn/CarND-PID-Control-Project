@@ -70,7 +70,7 @@ public:
   Calculate throttle based on current and desired speed
   * Again a simple PID controller (just the P portion may be sufficient)
   */
-  double calculate_throttle(double speed, double desired_speed);
+  double calculate_throttle(double speed, double desired_speed, double steer_value, double cte);
 
   /**
   Thanks to this forum discussion. Got the idea from there: 

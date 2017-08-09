@@ -9,7 +9,7 @@ using namespace std;
 * TODO: Complete the PID class.
 */
 
-const double DP_TOL = .2;
+const double DP_TOL = .1;
 const int RESTART_STEPS = 600;
 const int MIN_STEPS_ERR = 40;
 const double MAX_CTE = 2;
@@ -19,9 +19,9 @@ PID::PID(double p[NUM_PARAMS]) {
 	for(int i=0; i<NUM_PARAMS; i++) {
 		this->p[i] = p[i];
 	}
-	dp[0] =1;
+	dp[0] =.2;
 	dp[1] =1;
-	dp[2] =1;
+	dp[2] =0;
 	reset_vars();
 	twiddle_n = 0;
 	twiddle_fn_pos=0;
@@ -119,9 +119,14 @@ double PID::calculate_steer(){
 	return steer; // based on the convention in this case
 }
 
-double PID::calculate_throttle(double speed, double desired_speed){
+double PID::calculate_throttle(double speed, double desired_speed, double steer_value, double cte){
 	double speed_cte = speed - desired_speed;
 	double throttle = -.12 * speed_cte;
+	// if cte is more and the steer value then don't throttle so much
+	// (reduce throttle)
+	if (throttle > 0) {
+		throttle += -1.75*fabs(steer_value) - 0.3 * fabs(cte);
+	}
 	return throttle;
 
 }

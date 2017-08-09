@@ -10,7 +10,7 @@ using namespace std;
 using json = nlohmann::json;
 
 //const double LIMIT_IN_RADIAN = 0.0174533 * 10;
-const double DESIRED_SPEED = 30;
+const double DESIRED_SPEED = 40;
 bool train=false;
 
 // For converting back and forth between radians and degrees.
@@ -64,7 +64,10 @@ int main(int argc, char** argv)
   //double p[NUM_PARAMS] = {0.945085, 7.16176, 0};
 
   // Target 30 miles/hr
-  double p[NUM_PARAMS] = {0.216085, 5.63086, 0};
+  // double p[NUM_PARAMS] = {0.216085, 5.63086, 0};
+
+  // Target 40 miles/hr
+  double p[NUM_PARAMS] = {0.445619, 6.58267, 0};
 
   PID pid(p);
 
@@ -126,7 +129,7 @@ int main(int argc, char** argv)
          // cout << "CTE: " << cte << ", Steering Value: " << steer_value << endl;
               
           // Set throttle value based on desired spped
-          double throttle = pid.calculate_throttle(speed, DESIRED_SPEED);
+          double throttle = pid.calculate_throttle(speed, DESIRED_SPEED, steer_value, cte);
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;

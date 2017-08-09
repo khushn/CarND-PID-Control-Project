@@ -40,3 +40,6 @@ corresponding p: 5.05822, 1.44926, 0
 4) speed 30 miles/hr
 best so far 58.4071(58.3905; best_p= 0.216085, 5.63086, 0)
 Using 600 steps
+
+5) target speed 40 miles/hr
+best so far 70.5631(70.4391; best_p= 0.445619, 6.58267, 0)
