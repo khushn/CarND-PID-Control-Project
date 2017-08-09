@@ -17,6 +17,7 @@ public:
   double square_error;
 
   double best_error;
+  double best_p[NUM_PARAMS];
   /*
   * Coefficients
   */ 
@@ -64,6 +65,12 @@ public:
   * calculate the steering angle needed
   */
   double calculate_steer();
+
+  /*
+  Calculate throttle based on current and desired speed
+  * Again a simple PID controller (just the P portion may be sufficient)
+  */
+  double calculate_throttle(double speed, double desired_speed);
 
   /**
   Thanks to this forum discussion. Got the idea from there: 

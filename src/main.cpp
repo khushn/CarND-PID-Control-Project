@@ -9,6 +9,10 @@ using namespace std;
 // for convenience
 using json = nlohmann::json;
 
+//const double LIMIT_IN_RADIAN = 0.0174533 * 10;
+const double DESIRED_SPEED = 30;
+bool train=false;
+
 // For converting back and forth between radians and degrees.
 constexpr double pi() { return M_PI; }
 double deg2rad(double x) { return x * pi() / 180; }
@@ -30,9 +34,23 @@ std::string hasData(std::string s) {
   return "";
 }
 
-int main()
+int main(int argc, char** argv)
 {
+
   uWS::Hub h;
+
+  if (argc > 1) {
+    string first = argv[1];
+    if (first == "train") {      
+      train = true;
+    } 
+  }
+
+  if (train) {
+    cout << "Training mode!" << endl;
+  } else {
+    cout << "Testing mode!" << endl;
+  }
 
   
   // double p[NUM_PARAMS] = {3, 0, 0}; // 1st try -- works for 10 miles/hour using python twiddle
@@ -41,8 +59,12 @@ int main()
 
   // Below found using twiddle for 10 miles per hour. 80 steps
   //double p[NUM_PARAMS] = {5.05822, 1.44926, 0};
-  double p[NUM_PARAMS] = {0.538877, 0.916183, 0}; // Found for 20 miles per hour 
+  
+  // Found for 20 miles per hour 
+  //double p[NUM_PARAMS] = {0.945085, 7.16176, 0};
 
+  // Target 30 miles/hr
+  double p[NUM_PARAMS] = {0.216085, 5.63086, 0};
 
   PID pid(p);
 
@@ -78,28 +100,33 @@ int main()
           * another PID controller to control the speed!
           */
 
-          bool train=false;
+          
 
-          if (train) {
+          if (train) {           
             int ret = pid.UpdateErrorTraining(cte, speed, angle);
             if (ret != 0) {
               return;
             }
-          } else {
+          } else {            
             pid.UpdateErrorDrive(cte, speed, angle);
           }
 
           steer_value = pid.calculate_steer();
 
+          /**
+          // We should keep the steer value between -1 and 1 degrees
+          if (steer_value > LIMIT_IN_RADIAN) {
+            steer_value = LIMIT_IN_RADIAN;
+          } else if (steer_value < -LIMIT_IN_RADIAN) {
+            steer_value = -LIMIT_IN_RADIAN;
+          }
+          **/
+
 
          // cout << "CTE: " << cte << ", Steering Value: " << steer_value << endl;
               
           // Set throttle value based on desired spped
-          const double DESIRED_SPEED = 20;
-          double throttle = .3;
-          if (speed >= DESIRED_SPEED) {
-            throttle = 0.;
-          }
+          double throttle = pid.calculate_throttle(speed, DESIRED_SPEED);
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;

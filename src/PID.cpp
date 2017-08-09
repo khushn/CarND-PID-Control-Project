@@ -10,7 +10,7 @@ using namespace std;
 */
 
 const double DP_TOL = .2;
-const int RESTART_STEPS = 200;
+const int RESTART_STEPS = 600;
 const int MIN_STEPS_ERR = 40;
 const double MAX_CTE = 2;
 
@@ -44,6 +44,8 @@ int PID::UpdateErrorDrive(double cte, double speed, double angle) {
 
 	if (!first_time) {
 		d_error = cte - p_error;
+	} else {
+		first_time = false;
 	}
 
 	p_error = cte;
@@ -87,6 +89,8 @@ int PID::UpdateErrorTraining(double cte, double speed, double angle) {
 
 	if (!first_time) {
 		d_error = cte - p_error;
+	} else {
+		first_time = false;
 	}
 
 	p_error = cte;
@@ -96,7 +100,8 @@ int PID::UpdateErrorTraining(double cte, double speed, double angle) {
 	if (iterations_ > MIN_STEPS_ERR) {
 		square_error += cte*cte;
 		if (best_error != -1 && square_error > best_error) {
-			cout << "error exceeded best so far " << square_error << "(" << best_error << ")" << endl;
+			cout << "error exceeded best so far " << square_error << "(" << best_error << "; best_p= "
+			<< best_p[0] << ", " << best_p[1] << ", " << best_p[2] << ")" << endl;
 			Restart();
 			return -2;
 		}
@@ -112,6 +117,13 @@ double PID::TotalError() {
 double PID::calculate_steer(){
 	double steer = -p[0] * p_error - p[1] * d_error - p[2] * i_error;
 	return steer; // based on the convention in this case
+}
+
+double PID::calculate_throttle(double speed, double desired_speed){
+	double speed_cte = speed - desired_speed;
+	double throttle = -.12 * speed_cte;
+	return throttle;
+
 }
 
 
@@ -216,6 +228,9 @@ bool PID::check_best_error(){
 	if ( iterations_ >= RESTART_STEPS && best_error > square_error) {
 		best_error = square_error;
 		cout << "New best error: " << best_error << endl;
+		for(int i=0; i<NUM_PARAMS; i++){
+			best_p[i] = p[i];
+		}
 		cout << "corresponding p: " << p[0] << ", " << p[1] << ", " << p[2] << endl;
 		return true;
 	} else {
