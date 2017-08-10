@@ -26,6 +26,9 @@ We set the steering drift at .44
 
 #### Approach
 
+We use twiddle, with the simulator. The key code is modeled after the Python code done in the class. And is in the twiddle_check() method of PID class. It looks complicated, because of the control exchange between simulater and itself. 
+
+1) 
 #### best p values using twiddle
 
 1)
@@ -53,4 +56,6 @@ best so far 70.5631(70.4391; best_p= 0.445619, 6.58267, 0)
 54.856;  best_p= 0.983737, 12.09, 0.000300551 (Just D)
 37.2432; best_p= 1.93066, 12.09, 0.000300551 (Just P)
 
-6) target speed 60 miles/hr
+6) Trying again afresh: 
+target: 40 miles/hr
+142.015(141.39; best_p= 16.0899, 0, 0.000300551 (Just P)

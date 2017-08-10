@@ -70,7 +70,7 @@ int main(int argc, char** argv)
   //double p[NUM_PARAMS] = {0.445619, 6.58267, 0};
 
   // Target 40 miles/hr (with 10th Aug changes)
-  double p[NUM_PARAMS] = {1, 0, 0.000300551};
+  double p[NUM_PARAMS] = {0.945085, 7.16176, 0.000300551};
 
   PID pid(p);
 

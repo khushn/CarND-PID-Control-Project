@@ -9,7 +9,7 @@ using namespace std;
 * TODO: Complete the PID class.
 */
 
-const double DP_TOL =  .05; // .00001; is a good value to have for the I part
+const double DP_TOL =  1; // .00001; is a good value to have for the I part
 const int RESTART_STEPS = 600;
 const int MIN_STEPS_ERR = 40;
 const double MAX_CTE = 2;
@@ -17,15 +17,15 @@ const double MAX_CTE = 2;
 const double DEGREE_TO_RADIANS=0.0174533;
 const double MAX_THROTTLE_AT_SPEED = 5; // degrees
 
-const int TWIDDLE_START_POS = 0;
+const int TWIDDLE_START_POS = 1;
 
 PID::PID(double p[NUM_PARAMS]) {
 	best_error = numeric_limits<double>::max();
 	for(int i=0; i<NUM_PARAMS; i++) {
 		this->p[i] = p[i];
 	}
-	dp[0] =1;
-	dp[1] =0; // 5; // this is the best value for D 
+	dp[0] =0;  // 5; is a good value to start with for P
+	dp[1] =50; // 5; // this is the best value for D 
 	dp[2] =0; // .0001; // this is a good value to play with
 	reset_vars();
 	twiddle_n = TWIDDLE_START_POS;
@@ -99,6 +99,7 @@ int PID::UpdateErrorTraining(double cte, double speed, double angle) {
 		first_time = false;
 	}
 
+	//cout << "cte: " << cte << ", d_error: " << d_error << endl;
 	p_error = cte;
 
 	i_error += cte;
@@ -149,6 +150,8 @@ double PID::calculate_throttle(double speed, double desired_speed, double steer_
 	const double MIN_SPEED_FOR_THROTTLE_CHECK = 10;
 	double speed_cte = speed - desired_speed;
 	double throttle = -.12 * speed_cte;
+
+	
 	// if cte is more and the steer value then don't throttle so much
 	// (reduce throttle)
 	if (speed > MIN_SPEED_FOR_THROTTLE_CHECK) {
@@ -156,6 +159,12 @@ double PID::calculate_throttle(double speed, double desired_speed, double steer_
 			throttle += -1.75*fabs(steer_value) - 0.3 * fabs(cte);
 		}
 	}
+
+	/**
+	Alternate way
+	throttle += -1.2*fabs(cte);
+	**/
+	
 
 	return throttle;
 }
@@ -222,7 +231,7 @@ int PID::twiddle_check() {
 			if(ret) {
 				dp[twiddle_n]*= 1.1;				
 				twiddle_n++;
-				if (twiddle_n == NUM_PARAMS-2) {
+				if (twiddle_n == NUM_PARAMS-1) {
 					twiddle_fn_pos = 0;					
 				} else {
 					twiddle_fn_pos=1;
@@ -245,7 +254,7 @@ int PID::twiddle_check() {
 			}
 			
 			twiddle_n++;
-			if (twiddle_n == NUM_PARAMS-2) {
+			if (twiddle_n == NUM_PARAMS-1) {
 				twiddle_fn_pos = 0;				
 				
 			} else {
