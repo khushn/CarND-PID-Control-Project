@@ -9,21 +9,26 @@ using namespace std;
 * TODO: Complete the PID class.
 */
 
-const double DP_TOL = .1;
+const double DP_TOL =  .05; // .00001; is a good value to have for the I part
 const int RESTART_STEPS = 600;
 const int MIN_STEPS_ERR = 40;
 const double MAX_CTE = 2;
+
+const double DEGREE_TO_RADIANS=0.0174533;
+const double MAX_THROTTLE_AT_SPEED = 5; // degrees
+
+const int TWIDDLE_START_POS = 0;
 
 PID::PID(double p[NUM_PARAMS]) {
 	best_error = numeric_limits<double>::max();
 	for(int i=0; i<NUM_PARAMS; i++) {
 		this->p[i] = p[i];
 	}
-	dp[0] =.2;
-	dp[1] =1;
-	dp[2] =0;
+	dp[0] =1;
+	dp[1] =0; // 5; // this is the best value for D 
+	dp[2] =0; // .0001; // this is a good value to play with
 	reset_vars();
-	twiddle_n = 0;
+	twiddle_n = TWIDDLE_START_POS;
 	twiddle_fn_pos=0;
 	restart_mode = false;
 }
@@ -63,7 +68,8 @@ int PID::UpdateErrorTraining(double cte, double speed, double angle) {
 
 	if (restart_mode) {
 		// check if still nor restarted. As there is some lag in the simulator
-		if (fabs(cte) > MAX_CTE && speed > 5 && angle > 0) {
+		// if (fabs(cte) > MAX_CTE && speed > 5 && angle > 0) {
+		if (fabs(cte) > MAX_CTE || speed > 5) {
 			cout << "Still in restart mode" << endl;
 			return -2;
 		} else {
@@ -114,21 +120,44 @@ double PID::TotalError() {
 	return square_error;
 }
 
-double PID::calculate_steer(){
+double PID::calculate_steer(double speed){
 	double steer = -p[0] * p_error - p[1] * d_error - p[2] * i_error;
+
+	// We introduce some control based on high speed
+	// It applies only for significant turns > 7 degree (arbitrary)
+	double steer_lim = MAX_THROTTLE_AT_SPEED * DEGREE_TO_RADIANS;
+	if (fabs(steer) > steer_lim) {
+		// and we apply for speed only above 10 miles/hr
+		int mul=1;
+		if (steer < 0)
+			mul = -1;
+		steer = fabs(steer) - fabs(steer)*(speed - 10)/speed;
+		if (steer < steer_lim) 
+			steer =  steer_lim;
+		steer*=mul;
+	}
+
+	// debug
+	//  apply the steer static correcrion 
+	// .44 degrees to the right
+	//steer -= 0.007679449;
+
 	return steer; // based on the convention in this case
 }
 
 double PID::calculate_throttle(double speed, double desired_speed, double steer_value, double cte){
+	const double MIN_SPEED_FOR_THROTTLE_CHECK = 10;
 	double speed_cte = speed - desired_speed;
 	double throttle = -.12 * speed_cte;
 	// if cte is more and the steer value then don't throttle so much
 	// (reduce throttle)
-	if (throttle > 0) {
-		throttle += -1.75*fabs(steer_value) - 0.3 * fabs(cte);
+	if (speed > MIN_SPEED_FOR_THROTTLE_CHECK) {
+		if (throttle > 0) {
+			throttle += -1.75*fabs(steer_value) - 0.3 * fabs(cte);
+		}
 	}
-	return throttle;
 
+	return throttle;
 }
 
 
@@ -175,7 +204,7 @@ int PID::twiddle_check() {
 				exit(0);
 			}
 
-			twiddle_n = 0;
+			twiddle_n = TWIDDLE_START_POS;
 			twiddle_fn_pos=1;
 			twiddle_check();
 			
@@ -193,7 +222,7 @@ int PID::twiddle_check() {
 			if(ret) {
 				dp[twiddle_n]*= 1.1;				
 				twiddle_n++;
-				if (twiddle_n == NUM_PARAMS-1) {
+				if (twiddle_n == NUM_PARAMS-2) {
 					twiddle_fn_pos = 0;					
 				} else {
 					twiddle_fn_pos=1;
@@ -216,7 +245,7 @@ int PID::twiddle_check() {
 			}
 			
 			twiddle_n++;
-			if (twiddle_n == NUM_PARAMS-1) {
+			if (twiddle_n == NUM_PARAMS-2) {
 				twiddle_fn_pos = 0;				
 				
 			} else {

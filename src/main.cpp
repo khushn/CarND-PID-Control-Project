@@ -67,7 +67,10 @@ int main(int argc, char** argv)
   // double p[NUM_PARAMS] = {0.216085, 5.63086, 0};
 
   // Target 40 miles/hr
-  double p[NUM_PARAMS] = {0.445619, 6.58267, 0};
+  //double p[NUM_PARAMS] = {0.445619, 6.58267, 0};
+
+  // Target 40 miles/hr (with 10th Aug changes)
+  double p[NUM_PARAMS] = {1, 0, 0.000300551};
 
   PID pid(p);
 
@@ -114,7 +117,7 @@ int main(int argc, char** argv)
             pid.UpdateErrorDrive(cte, speed, angle);
           }
 
-          steer_value = pid.calculate_steer();
+          steer_value = pid.calculate_steer(speed);
 
           /**
           // We should keep the steer value between -1 and 1 degrees

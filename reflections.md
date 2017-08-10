@@ -24,6 +24,8 @@ We set the steering drift at .44
 </tr>
 </table>
 
+#### Approach
+
 #### best p values using twiddle
 
 1)
@@ -43,3 +45,12 @@ Using 600 steps
 
 5) target speed 40 miles/hr
 best so far 70.5631(70.4391; best_p= 0.445619, 6.58267, 0)
+
+5b) 40 miles/hr (with 10th Aug changes) -- 600 steps
+95.2339; best_p= 0.983737, 6.58267, 0 (Just P)
+94.7971; best_p= 0.983737, 6.00883, 0 (ID)
+64.8928; best_p= 0.983737, 6.00883, 0.000300551(Just I)
+54.856;  best_p= 0.983737, 12.09, 0.000300551 (Just D)
+37.2432; best_p= 1.93066, 12.09, 0.000300551 (Just P)
+
+6) target speed 60 miles/hr

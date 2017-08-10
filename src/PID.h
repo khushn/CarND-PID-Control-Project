@@ -64,7 +64,7 @@ public:
   /*
   * calculate the steering angle needed
   */
-  double calculate_steer();
+  double calculate_steer(double speed);
 
   /*
   Calculate throttle based on current and desired speed
