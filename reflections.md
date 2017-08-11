@@ -1,32 +1,16 @@
 ### Reflections on the project
 
-#### Steering drift
-By setting the steering value to 0 radians and taking around 20 readings. It is observed that the steering drift is .44 degrees. 
-
-#### twiddle
-We use the twiddle python code done in the previous exercise to get the values of parameters. 
-Table below has parameter values for various speeds. 
-We set the steering drift at .44
-<table>
-<tr>
-<th>Speed(Miles/hour)</th>
-<th>Tau-p</th>
-<th>Tau-d</th>
-<th>Tau-i</th>
-<th>Total error</th>
-</tr>
-<tr>
-<td>10</td>
-<td>3</td>
-<td>0</td>
-<td>0</td>
-<td>60.82</td>
-</tr>
-</table>
 
 #### Approach
 
-We use twiddle, with the simulator. The key code is modeled after the Python code done in the class. And is in the twiddle_check() method of PID class. It looks complicated, because of the control exchange between simulater and itself. 
+We use twiddle, with the simulator. The key code is modeled after the Python code done in the class. And is in the twiddle_check() method of PID class. It looks a bit complicated, because of the control exchange between simulater and itself. 
+
+So there are two modes - Training and Drive. 
+
+##### Training mode
+
+In the training mode, the main program is run as: 
+<code>./pid train</code>
 
 1) 
 #### best p values using twiddle
@@ -59,3 +43,28 @@ best so far 70.5631(70.4391; best_p= 0.445619, 6.58267, 0)
 6) Trying again afresh: 
 target: 40 miles/hr
 142.015(141.39; best_p= 16.0899, 0, 0.000300551 (Just P)
+
+
+#### Steering drift
+By setting the steering value to 0 radians and taking around 20 readings. It is observed that the steering drift is .44 degrees. 
+
+#### twiddle
+We use the twiddle python code done in the previous exercise to get the values of parameters. 
+Table below has parameter values for various speeds. 
+We set the steering drift at .44
+<table>
+<tr>
+<th>Speed(Miles/hour)</th>
+<th>Tau-p</th>
+<th>Tau-d</th>
+<th>Tau-i</th>
+<th>Total error</th>
+</tr>
+<tr>
+<td>10</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>60.82</td>
+</tr>
+</table>
