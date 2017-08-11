@@ -15,7 +15,7 @@ const int MIN_STEPS_ERR = 40;
 const double MAX_CTE = 2;
 
 const double DEGREE_TO_RADIANS=0.0174533;
-const double MAX_THROTTLE_AT_SPEED = 5; // degrees
+const double MAX_DEGREES_AT_SPEED = 5; // degrees
 
 const int TWIDDLE_START_POS = 1;
 
@@ -122,19 +122,28 @@ double PID::TotalError() {
 }
 
 double PID::calculate_steer(double speed){
+	const double MIN_SPEED_FOR_CHECK = 10;
 	double steer = -p[0] * p_error - p[1] * d_error - p[2] * i_error;
 
 	// We introduce some control based on high speed
 	// It applies only for significant turns > 7 degree (arbitrary)
-	double steer_lim = MAX_THROTTLE_AT_SPEED * DEGREE_TO_RADIANS;
-	if (fabs(steer) > steer_lim) {
+	double steer_lim = MAX_DEGREES_AT_SPEED * DEGREE_TO_RADIANS;
+	if (fabs(steer) > steer_lim && speed > MIN_SPEED_FOR_CHECK) {
 		// and we apply for speed only above 10 miles/hr
 		int mul=1;
 		if (steer < 0)
 			mul = -1;
-		steer = fabs(steer) - fabs(steer)*(speed - 10)/speed;
+
+		
+		steer = fabs(steer) - fabs(steer)*(speed - MIN_SPEED_FOR_CHECK)/speed;
 		if (steer < steer_lim) 
 			steer =  steer_lim;
+		
+		/*
+		Another approach -- crude doesn't work
+		steer = steer_lim;
+		**/
+
 		steer*=mul;
 	}
 
