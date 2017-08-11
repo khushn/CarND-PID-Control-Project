@@ -112,6 +112,30 @@ double PID::calculate_throttle(double speed, double desired_speed, double steer_
 }
 </code>
 
+##### Controlling steer based on speed
+The main control is based on PID. But I kept a check on the angle, which is inversely proportional to speed. For speeds above 10 miles/hr. This was a simple heuristic discovered while searching/training for PID values. 
+
+<code>
+// We introduce some control based on high speed
+	// It applies only for significant turns > 7 degree (arbitrary)
+	double steer_lim = MAX_DEGREES_AT_SPEED * DEGREE_TO_RADIANS;
+	if (fabs(steer) > steer_lim && speed > MIN_SPEED_FOR_CHECK) {
+		// and we apply for speed only above 10 miles/hr
+		int mul=1;
+		if (steer < 0)
+			mul = -1;
+
+		
+		steer = fabs(steer) - fabs(steer)*(speed - MIN_SPEED_FOR_CHECK)/speed;
+		if (steer < steer_lim) 
+			steer =  steer_lim;
+		
+		
+
+		steer*=mul;
+	}
+</code>
+
 ##### Other Observations/Suggestions
 The training for searching of PID values takes a significant amount of time. And it heats the laptop. So it would be better if we can find a way, for future students, to train using a command line version of the simulator. And just drive on the simulator. This will give options to run on cloud machines.
 
