@@ -24,7 +24,7 @@ The P value for each speed was slightly different. This is because there is a gr
 
 <video width="320" height="240" controls>
 <source src="/blob/master/pid_train.mp4" type="video/mp4">
-<a href = "/blob/master/pid_train.mp4"> Video of training </a>
+You can also see this short <a href = "/blob/master/pid_train.mp4"> Video of training </a> on how twiddle is used with Reset.
 </video>
 
 Below table shows all the values of PID at different speeds. 
