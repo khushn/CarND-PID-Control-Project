@@ -23,8 +23,8 @@ I also tried it at various speeds of 10 miles/h, 20 miles/h,  40 m/h and going u
 The P value for each speed was slightly different. This is because there is a greater <b>push</b> at higher speed and the car swerves more. 
 
 <video width="320" height="240" controls>
-<source src="/blob/master/pid_train.mp4" type="video/mp4">
-You can also see this short <a href = "/blob/master/pid_train.mp4"> Video of training </a> on how twiddle is used with Reset.
+<source src="/pid_train.mp4" type="video/mp4">
+You can also see this short <a href = "/pid_train.mp4"> Video of training </a> on how twiddle is used with Reset.
 </video>
 
 Below table shows all the values of PID at different speeds. 
