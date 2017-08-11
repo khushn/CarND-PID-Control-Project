@@ -3,7 +3,7 @@
 
 #### Approach
 
-We use twiddle, with the simulator. The key code is modeled after the Python code done in the class. And is in the twiddle_check() method of PID class. It looks a bit complicated, because of the control exchange between simulater and itself. 
+We use twiddle, with the simulator. The key code is modeled after the Python code done in the class. And is in the <code> twiddle_check() </code> method of PID class. It looks a bit complicated, because of the control exchange between simulater and itself. 
 
 So there are two modes - Training and Drive. 
 
@@ -13,7 +13,11 @@ In the training mode, the main program is run as:
 
 <code>./pid train</code>
 
-1) 
+In this mode the method called of class PID is <code> UpdateErrorTraining() </code>, which makes use of the <code> Restart() </code> method to: 
+1. Send a Reset message to the simulator. Done after every RESTART_STEPS parameter in PID.cpp. Which brings the car in the simulator to the staring point. 
+2. It also calls <code> twiddle_check() </code> which twiddles the parameters in the p[] array in PID class.  
+
+
 #### best p values using twiddle
 
 1)
