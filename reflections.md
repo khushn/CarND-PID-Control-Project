@@ -96,6 +96,7 @@ I realized doing the project that throttle should be proportional to difference 
 
 <code>
 double PID::calculate_throttle(double speed, double desired_speed, double steer_value, double cte){
+
 	const double MIN_SPEED_FOR_THROTTLE_CHECK = 10;
 	double speed_cte = speed - desired_speed;
 	double throttle = -.12 * speed_cte;
@@ -117,6 +118,7 @@ The main control is based on PID. But I kept a check on the angle, which is inve
 
 <code>
 // We introduce some control based on high speed
+
 // It applies only for significant turns > 7 degree (arbitrary)
 
 double steer_lim = MAX_DEGREES_AT_SPEED * DEGREE_TO_RADIANS;
