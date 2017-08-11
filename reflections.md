@@ -37,6 +37,26 @@ Below table shows all the values of PID at different speeds.
 <td>1.44926</td>
 <td>0</td>
 </tr>
+<tr>
+<td>20</td>
+<td>0.945085</td>
+<td>7.16176</td>
+<td>0</td>
+</tr>
+</tr>
+<tr>
+<td>30</td>
+<td>0.216085</td>
+<td>5.63086</td>
+<td>0</td>
+</tr>
+</tr>
+<tr>
+<td>40</td>
+<td>0.945085</td>
+<td>7.16176</td>
+<td>0.000300551</td>
+</tr>
 </table>
 
 
