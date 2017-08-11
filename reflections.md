@@ -15,7 +15,29 @@ In the training mode, the main program is run as:
 
 In this mode the method called of class PID is <code> UpdateErrorTraining() </code>, which makes use of the <code> Restart() </code> method to: 
 1. Send a Reset message to the simulator. Done after every RESTART_STEPS parameter in PID.cpp. Which brings the car in the simulator to the staring point. 
-2. It also calls <code> twiddle_check() </code> which twiddles the parameters in the p[] array in PID class.  
+2. It also calls <code> twiddle_check() </code> which twiddles the parameters in the p[] array in PID class. 
+
+###### Effect of P of the controller and how its chosen
+We first want to get the P part, which is very important. So I did this by setting the other two params in the dp[] array to 0. Also TWIDDLE_START_POS was set to one, and twiddle_check() method loops were adjusted accordingly. 
+I also tried it at various speeds of 10 miles/h, 20 miles/h,  40 m/h and going upto 60 m/hr. 
+The P value for each speed was slightly different. This is because there is a greater <b>push</b> at higher speed and the car swerves more. 
+
+Below table shows all the values of PID at different speeds. 
+
+<table>
+<tr>
+<th>Speed(Miles/hour)</th>
+<th>Tau-p</th>
+<th>Tau-d</th>
+<th>Tau-i</th>
+</tr>
+<tr>
+<td>10</td>
+<td>5.05822</td>
+<td>1.44926</td>
+<td>0</td>
+</tr>
+</table>
 
 
 #### best p values using twiddle
