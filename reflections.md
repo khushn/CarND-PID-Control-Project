@@ -18,6 +18,7 @@ In this mode the method called of class PID is <code> UpdateErrorTraining() </co
 2. It also calls <code> twiddle_check() </code> which twiddles the parameters in the p[] array in PID class. 
 
 ###### Effect of P of the controller and how its chosen
+
 We first want to get the P part, which is very important. So I did this by setting the other two params in the dp[] array to 0. Also TWIDDLE_START_POS was set to one, and twiddle_check() method loops were adjusted accordingly. 
 I also tried it at various speeds of 10 miles/h, 20 miles/h,  40 m/h and going upto 60 m/hr. 
 The P value for each speed was slightly different. This is because there is a greater <b>push</b> at higher speed and the car swerves more. 
@@ -26,6 +27,18 @@ The P value for each speed was slightly different. This is because there is a gr
 <source src="/pid_train.mp4" type="video/mp4">
 You can also see this short <a href = "/pid_train.mp4"> Video of training </a> on how twiddle is used with Reset.
 </video>
+
+###### Effect of D(ifferential) part in the PID
+
+The differntial smoothens the oscillating behavior. When the car is run with just P part, it continously dances along the way. Where as with the D part, the values shown in table below it runs relatively smoothly.
+
+###### Effect of I(ntegral) part in the PID
+
+The integral part takes care of Car flaws like steering drift. 
+By setting the steering value to 0 radians and taking around 20 readings. It is observed that the steering drift is .44 degrees. 
+This was calculated the last, when we had stable P and I values. And it definitely improved the error.
+
+###### PID table learnt using Twiddle
 
 Below table shows all the values of PID at different speeds. 
 
@@ -97,8 +110,7 @@ target: 40 miles/hr
 142.015(141.39; best_p= 16.0899, 0, 0.000300551 (Just P)
 
 
-#### Steering drift
-By setting the steering value to 0 radians and taking around 20 readings. It is observed that the steering drift is .44 degrees. 
+
 
 #### twiddle
 We use the twiddle python code done in the previous exercise to get the values of parameters. 
