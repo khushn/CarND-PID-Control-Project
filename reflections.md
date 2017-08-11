@@ -24,7 +24,7 @@ The P value for each speed was slightly different. This is because there is a gr
 
 <video width="320" height="240" controls>
 <source src="/blob/master/pid_train.mp4" type="video/mp4">
-Video of training
+<a href = "/blob/master/pid_train.mp4"> Video of training </a>
 </video>
 
 Below table shows all the values of PID at different speeds. 
