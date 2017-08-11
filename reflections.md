@@ -78,6 +78,30 @@ Below table shows all the values of PID at different speeds.
 </table>
 
 
+##### Drive mode
+
+In the drive mode, the main program is run without any arguments as: 
+
+<code>./pid</code>
+
+Before that of course the p[] values learnt in the training mode for the speed are applied. 
+The car was seen to drive comfortably ar 40 miles/hr and also at 50 miles/hr. 
+
+At 60 miles/hr. the car was seen to go off track, at a very curvy place at the end of the loop. 
+
+The video of car driving (just a short excerpt, around a curvy part) at 40 miles/h is linked below.
+
+
+<video width="320" height="240" controls>
+<source src="/pid_drive.mp4" type="video/mp4">
+You see this short <a href = "/pid_train.mp4"> Video of Driving </a> around a curvy path.
+</video>
+
+
+### Appendix
+
+Some other notes made during the training part are below.
+
 #### best p values using twiddle
 
 1)
