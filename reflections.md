@@ -89,20 +89,23 @@ The car was seen to drive comfortably ar 40 miles/hr and also at 50 miles/hr.
 
 At 60 miles/hr. the car was seen to go off track, at a very curvy place at the end of the loop. 
 
-The video of car driving (just a short excerpt, around a curvy part) at 40 miles/h is linked below.
+The present code works fine for 40 miles/hr. (Since the simulator's record option wasn't working on Linux, I could take only one video with my phone to capture the training part)
 
 
-<video width="320" height="240" controls>
-<source src="/pid_drive.mp4" type="video/mp4">
-You see this short <a href = "/pid_train.mp4"> Video of Driving </a> around a curvy path.
-</video>
+##### Other Observations/Suggestions
+The training for searching of PID values takes a significant amount of time. And it heats the laptop. So it would be better if we can find a way, for future students, to train using a command line version of the simulator. And just drive on the simulator. This will give options to run on cloud machines.
 
 
 ### Appendix
 
 Some other notes made during the training part are below.
 
-#### best p values using twiddle
+#### twiddle
+At first, I tried to use the twiddle python code done in the previous exercise to get the values of parameters. But soon I realized PID values should be learnt in the actual system. An approximation, even at same speeds yields totally differnt results. 
+The python code is in <a href="/python/twiddle.py"> twiddle.py </a>
+
+
+#### Record of various best p values using twiddle, changing speed and no. of steps in simulation
 
 1)
 error: 0.119131 (speed 10 miles/hr)
@@ -136,23 +139,5 @@ target: 40 miles/hr
 
 
 
-#### twiddle
-We use the twiddle python code done in the previous exercise to get the values of parameters. 
-Table below has parameter values for various speeds. 
-We set the steering drift at .44
-<table>
-<tr>
-<th>Speed(Miles/hour)</th>
-<th>Tau-p</th>
-<th>Tau-d</th>
-<th>Tau-i</th>
-<th>Total error</th>
-</tr>
-<tr>
-<td>10</td>
-<td>3</td>
-<td>0</td>
-<td>0</td>
-<td>60.82</td>
-</tr>
-</table>
+
+
