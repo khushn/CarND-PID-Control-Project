@@ -3,7 +3,7 @@
 
 #### Approach
 
-We use twiddle, with the simulator. The key code is modeled after the Python code done in the class. And is in the <code> twiddle_check() </code> method of PID class. It looks a bit complicated, because of the control exchange between simulater and itself. 
+We use <i>twiddle</i>, with the simulator. The key code is modeled after the Python code done in the class. And is in the <code> twiddle_check() </code> method of PID class. It looks a bit complicated, because of the control exchange between simulater and itself. 
 
 So there are two modes - Training and Drive. 
 
