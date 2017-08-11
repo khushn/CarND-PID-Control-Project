@@ -91,6 +91,26 @@ At 60 miles/hr. the car was seen to go off track, at a very curvy place at the e
 
 The present code works fine for 40 miles/hr. (Since the simulator's record option wasn't working on Linux, I could take only one video with my phone to capture the <a href = "/pid_train.mp4">training</a> part)
 
+##### Controlling throttle based on steer and cte
+I realized doing the project that throttle should be proportional to difference with the target speed. Also it should be less when the car is turning and when close to the edge. 
+
+<code>
+double PID::calculate_throttle(double speed, double desired_speed, double steer_value, double cte){
+	const double MIN_SPEED_FOR_THROTTLE_CHECK = 10;
+	double speed_cte = speed - desired_speed;
+	double throttle = -.12 * speed_cte;
+
+	
+	// if cte is more and the steer value then don't throttle so much
+	// (reduce throttle)
+	if (speed > MIN_SPEED_FOR_THROTTLE_CHECK) {
+		if (throttle > 0) {
+			throttle += -1.75*fabs(steer_value) - 0.3 * fabs(cte);
+		}
+	}
+	return throttle;
+}
+</code>
 
 ##### Other Observations/Suggestions
 The training for searching of PID values takes a significant amount of time. And it heats the laptop. So it would be better if we can find a way, for future students, to train using a command line version of the simulator. And just drive on the simulator. This will give options to run on cloud machines.
