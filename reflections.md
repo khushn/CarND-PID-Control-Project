@@ -89,7 +89,7 @@ The car was seen to drive comfortably ar 40 miles/hr and also at 50 miles/hr.
 
 At 60 miles/hr. the car was seen to go off track, at a very curvy place at the end of the loop. 
 
-The present code works fine for 40 miles/hr. (Since the simulator's record option wasn't working on Linux, I could take only one video with my phone to capture the training part)
+The present code works fine for 40 miles/hr. (Since the simulator's record option wasn't working on Linux, I could take only one video with my phone to capture the <a href = "/pid_train.mp4">training</a> part)
 
 
 ##### Other Observations/Suggestions
