@@ -10,6 +10,7 @@ So there are two modes - Training and Drive.
 ##### Training mode
 
 In the training mode, the main program is run as: 
+
 <code>./pid train</code>
 
 1) 
